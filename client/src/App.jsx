@@ -5,27 +5,25 @@ import SearchReceipt from './components/SearchReceipt';
 import InvoiceForm from './components/InvoiceFrom';
 import Analytics from './pages/Analytics';
 import Sidebar from './pages/sidebar/Sidebar';
-import TypeProvider from './context/TypeContext';
-import UserProvider, { UserContext } from './context/UserProvider';
+import TypeProvider from './context/TypeProvider';
+import { UserContext } from './context/UserProvider';
 import Login from './pages/Login';
 import { useContext } from 'react';
 
 const App = () => {
 
-  // const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   
-// console.log('user : ', user?.name);
+  console.log('user : ', user?.name);
   return (
     <>
     <Router>
-      <UserProvider>
         <Sidebar />
-      </UserProvider>
         {/* {
           user? ( */}
 
               <div>
-                <TypeProvider>
+                {/* <TypeProvider> */}
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
@@ -34,7 +32,7 @@ const App = () => {
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/type/:ele" element={<InvoiceForm />} />
                   </Routes>
-                </TypeProvider>
+                {/* </TypeProvider> */}
               </div>
           {/* ) : navigate("/")
         } */}

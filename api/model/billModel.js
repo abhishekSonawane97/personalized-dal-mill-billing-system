@@ -27,26 +27,21 @@ const billSchema = mongoose.Schema({
         type : String,
         required : [ true, 'Please enter weight.' ],
     },
-    // do calculations in backend and the value should came automatically.
     dal : {
         type : String,
         required :  [ true, 'Please enter dal wt.' ],
     },
-    // do calculations in backend and the value should came automatically.
     bhusa : {
         type : String,
         required : [ true, 'Please enter bhusa wt.' ],
     },
-    // do calculations in backend and the value should came automatically.
     ghat : {
         type : String,
         required :[ true, 'Please enter ghat wt.' ],
     },
-    // enter val to reduce from bill
     reduceBill : {
-        type : String
+        type : String 
     },
-    // calculate and get auto, also reduce from reduce bill
     bill : {
         type : String,
         required : [ true, 'Please enter bill amt.' ],
@@ -54,6 +49,10 @@ const billSchema = mongoose.Schema({
     rate : {
         type : String,
         required : [ true, 'Please enter a rate.' ],
+    },
+    isDelevered : {
+        type : String,
+        default: false,
     },
 },{
     Timestamp : true,

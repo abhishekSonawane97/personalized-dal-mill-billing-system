@@ -7,14 +7,6 @@ const Bill = require("../model/billModel.js")
 const getBills = asyncHandler(async(req, res)=>{
 
     try{
-
-        // authenticate user if login or not 
-        const user = true;
-
-        // if not logged in 
-        if(!user){
-            return res.status(404).json({"MESSAGE" : "WARNING! User Is Not Authenticated." });
-        }
         const bills = await Bill.find();
         if(bills) {
             return res.status(200).json({"MESSAGE" : "List of all bills.", bills});
@@ -30,9 +22,21 @@ const getBills = asyncHandler(async(req, res)=>{
 // @access public
 const getBill = asyncHandler(async(req, res)=>{
 
-    const { bill_Id } = req.params.bill_Id;
-    console.log('bill_Id : ',bill_Id );
-    res.status(200).json({"message" : "List of all bills."})
+    try{
+        const { bill_Id } = req.params;
+        if( !bill_Id ){
+            return res.status(400).json({ error: 'bill_Id is missing.' });
+        }
+        const bill = await Bill.findById(bill_Id);
+        if(!bill){
+            return res.status(400).json({ error: 'bill_Id is missing.' });
+        }
+
+        return res.status(200).json( bill );
+    }
+    catch(err){
+        res.status(400).json({ "message" : "Error searching bill", "error" : err});
+    }
 })
 
 // @desc Add new bill --->
@@ -41,7 +45,6 @@ const getBill = asyncHandler(async(req, res)=>{
 const addBill = asyncHandler(async(req, res)=>{
 
     try{
-
         const {name, village, phone, date, type, weight, dal, bhusa, ghat, reduceBill, bill, rate } = req.body;
         
         if( !name || !village || !phone || !date || !type || !weight || !dal || !bhusa || !ghat || !bill || !rate ){
@@ -61,8 +64,7 @@ const addBill = asyncHandler(async(req, res)=>{
         console.log('Error generating new bill');
         res.status(400).json({ "message" : "Error generating new bill", "error" : err});
     }
-})
-
+});
 
 // @desc Edit bill --->
 // @route GET /api/bills
@@ -79,7 +81,5 @@ const deleteBill = asyncHandler(async(req, res)=>{
 
     res.status(200).json({"message" : "List of all bills."})
 })
-
-
 
 module.exports = { getBills, getBill, deleteBill, editBill, addBill };

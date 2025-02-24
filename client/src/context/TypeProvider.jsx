@@ -4,7 +4,7 @@ export const TypeContext = createContext();
 
 const TypeProvider = ({ children }) => {
     
-    const [types, setTypes] = useState("");
+    const [types, setTypes] = useState("toor");
 
 
   return (

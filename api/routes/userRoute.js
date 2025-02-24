@@ -1,24 +1,25 @@
 const express = require("express");
-const router = express.Router();
 const { getUsers, getUser, checkUser, editUsers, deleteUsers, addNewUser } = require('../controller/userController.js');
+const validateToken = require("../middleware/validateTokenHandler.js");
 
+const router = express.Router();
 
 // get all users --->
-router.route("/").get(getUsers);
+// router.get( "/" , getUsers );
 
 // get partucular user --->
-router.route("/:id").get(getUser);
+router.get("/", validateToken, getUser );
 
 // check user --->
-router.route("/").post(checkUser);
+router.post("/" , checkUser );
 
 // register new user --->
-router.route("/newUser").post(addNewUser);
+router.post("/newUser" , addNewUser );
 
 // edit user ---> 
-router.route("/:id").put(editUsers);
+router.put("/:id", validateToken , editUsers );
 
 // delete user ---> 
-router.route("/:id").delete(deleteUsers);
+router.delete("/:id", validateToken , deleteUsers );
 
 module.exports = router;

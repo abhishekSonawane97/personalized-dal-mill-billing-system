@@ -1,61 +1,65 @@
-import React, { createContext, useState } from 'react';
-import { useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
  export const UserContext = createContext();
 
-const UserProvider = ({children}) => {
+const UserProvider = ({ children }) => {
 
-  const [error, setError ] = useState("")
-
-// user will be already present in database we can only get user detail match with login credentials and allow user to do some activity or not--->
-
+  const [error, setError ] = useState("");
   const [ user, setUser ] = useState(null);
-  const handleSubmit = async(e) => {
+  const [loading, setLoading] = useState(true);
 
-    setError('');
-    if (!name || !email || !password) {
-        setError('Please fill in all fields.');
-        return;
+
+  // setUser({
+  //   name : "test",
+  //   email : "test@gmail.com",
+  //   password : "test",
+  // });
+
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found in localStorage.");
+      setUser(null);
+      setLoading(false);
+      return;
     }
 
-    // Mock authentication or API call
-    // You can replace this with an actual API call
-    let res = await fetch('http://localhost:5001/api/user', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            name,
-            email,
-            password,
-        }),
-    });
-    
-    if (res.ok) {
-        res = await res.json();
-    } else {
-        setError('Login failed. Please try again.');
-        console.error("Failed to login:", res.status, res.statusText, error);
+    try {
+      setLoading(true);
+        const response = await fetch("http://localhost:5001/api/user", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user: ${response.status} ${response.statusText}`);
+            
+        } 
+        const data = await response.json();
+            console.log('providing user : ', data);
+            setUser(data);
+    } catch (err) {
+        console.log("Error fetching user:", err);
+        setError(err.message);
+        setUser(null);
     }
+    finally {
+      setLoading(false);
+    }
+};
 
-    console.log( 'name :', name ,"Email:", email, "Password:", password);
-    alert('Logged in successfully!');
-  };
+  
 
-  useEffect(()=>{
-
-    // setUser({
-    //   name : "test",
-    //   email : "test@gmail.com",
-    //   password : "test",
-    // });
-    
-  }, []);
+  useEffect(() => {
+    fetchUser();
+}, []);
 
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, fetchUser, error, loading }}>
       {children}
     </UserContext.Provider>
   )

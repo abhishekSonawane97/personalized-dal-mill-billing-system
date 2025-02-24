@@ -1,21 +1,22 @@
 const express  = require("express");
 const { getBills, getBill, addBill, editBill, deleteBill } = require("../controller/billsController");
+const validateToken = require("../middleware/validateTokenHandler");
 
 const router = express.Router();
 
 // get all dal bills --->
-router.route("/").get(getBills);
+router.get("/", validateToken , getBills );
 
 // Add New Bill --->
-router.route("/").post(addBill);
+router.post("/", validateToken, addBill);
 
 // get partucular bill using bill_Id --->
-router.route("/:bill_Id").get(getBill);
+router.get("/:bill_Id", validateToken, getBill );
 
 // edit old bill --->
-router.route("/:bill_Id").put(editBill);
+router.put("/:bill_Id", validateToken, editBill );
 
 // delete bill 
-router.route("/:bill_Id").delete(deleteBill);
+router.delete("/:bill_Id", validateToken, deleteBill );
 
 module.exports = router;

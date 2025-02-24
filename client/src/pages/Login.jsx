@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import UserProvider, { UserContext } from '../context/UserProvider';
 
 const Login = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+
+    const navigate = useNavigate();
+  const { fetchUser } = useContext(UserContext);
 
     // Mock authentication function
     const handleSubmit = async(e) => {
@@ -17,7 +22,6 @@ const Login = () => {
             return;
         }
 
-        // Mock authentication or API call
         // You can replace this with an actual API call
         let res = await fetch('http://localhost:5001/api/user', {
             method: "POST",
@@ -33,14 +37,15 @@ const Login = () => {
         
         if (res.ok) {
             res = await res.json();
-            console.log(' result : ', res.message, res.user)
+            localStorage.setItem("token", res.accessToken );
+            console.log(' result : ', res.message, res.accessToken);
+            fetchUser();
+            navigate('/')
+            
         } else {
             setError('Login failed. Please try again.');
             console.error("Failed to login:", res.status, res.statusText, error);
         }
-
-        // console.log( 'name :', name ,"Email:", email, "Password:", password);
-        alert('Welcome Logged in successfully!');
     };
 
     return (
@@ -59,7 +64,6 @@ const Login = () => {
           }}
         />
       </div>
-
 
             <div className="w-full m-0 sm:m-10 shadow sm:rounded-lg flex justify-center flex-1 text-white">
                 <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">

@@ -3,21 +3,22 @@ import './sidebar.css';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import UserProvider, { UserContext } from '../../context/UserProvider';
+import { TypeContext } from '../../context/TypeProvider';
 
 const Sidebar = () => {
 
     const { user, setUser } = useContext(UserContext);
-
+    const { types, setTypes } = useContext(TypeContext);
     
     const [isOpen, setIsOpen] = useState(false);
 
     const sidebarToggle = () => {
-        console.log(isOpen, 'sidebarToggle')
+        // console.log(isOpen, 'sidebarToggle');
         setIsOpen(!isOpen);
     };
 
     const handleLink = (val)=>{
-        val && setType(val);
+        val && setTypes(val);
         setIsOpen(!isOpen);
     }
 
@@ -26,12 +27,6 @@ const Sidebar = () => {
         if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
         }
-
-        // setUser({
-    //     name : "test",
-    //     email : "test@gmail.com",
-    //     password : "test",
-    //     })
     
     }, [user]);
 
@@ -71,7 +66,7 @@ const Sidebar = () => {
                             </Link>
                         </li>
                         <li className="menu-item-hover animate-fade-in" style={{ animationDelay: '0.4s' }}>
-                            <Link to={ user? "/type/udid" : '/login' }className="flex items-center p-2 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors duration-300" onClick={()=> handleLink('udid')} >
+                            <Link to={ user? "/type/udid" : '/login' } className="flex items-center p-2 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors duration-300" onClick={()=> handleLink('udid')} >
                                 {/* <SettingsIcon className="h-6 w-6 mr-3" /> */}
                                 Udid
                             </Link>

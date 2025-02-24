@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import PrintReceipt from './PrintReceipt'; // Make sure to adjust the path as necessary
+import PrintReceipt from './PrintReceipt';
 
 const SearchReceipt = ({ types }) => {
+
     const [searchVal, setSearchVal] = useState('');
     const [formData, setFormData] = useState({
-        name: 'a',
+        name: '',
         village: '',
         date: '',
         phone: '',
@@ -19,14 +20,16 @@ const SearchReceipt = ({ types }) => {
     });
 
     const handleSearchReceipt = async () => {
-        console.log('handleSearchReceipt: ', searchVal);
-    
+
         try {
-            // Replace with your actual API endpoint
-            const response = await fetch(`https://api.example.com/receipts?search=${searchVal}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            const token = localStorage.getItem("token");
+            const response = await fetch(`http://localhost:5001/api/bills/${searchVal}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
             const data = await response.json();
             setFormData(data);
 
@@ -47,16 +50,18 @@ const SearchReceipt = ({ types }) => {
         <div className="w-full p-8">
             <div className="search flex flex-col items-center">
                 <h2 className="font-bold text-center text-2xl border-b-2 p-2 rounded-sm border-blue-500 my-4 shadow-md capitalize">Search {types} Receipt</h2>
-                <input
-                    type="text"
-                    id="searchReceipt"
-                    name="searchReceipt"
-                    placeholder='Enter Name / Phone Number / Receipt Number'
-                    onChange={(e) => setSearchVal(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                    required
-                />
-                <button onClick={handleSearchReceipt} type="button" className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md">Submit</button>
+                <div className="flex items-center w-full justify-center gap-4">
+                    <input
+                        type="text"
+                        id="searchReceipt" 
+                        name="searchReceipt"
+                        placeholder='Enter Receipt Id'
+                        onChange={(e) => setSearchVal(e.target.value)}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        required
+                    />
+                    <button onClick={handleSearchReceipt} type="button" className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md">Submit</button>
+                </div>
             </div>
             {formData.name && (
                 <>

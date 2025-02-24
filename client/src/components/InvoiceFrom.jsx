@@ -1,13 +1,20 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import PrintReceipt from './PrintReceipt';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { TypeContext } from '../context/TypeProvider';
+import { UserContext } from '../context/UserProvider';
 
-const InvoiceForm = ({types}) => {
+const InvoiceForm = () => {
+
+    const { types, setTypes } = useContext(TypeContext);
+    const { loading, setLoading } = useContext(UserContext);
+    const receiptRef = useRef();
+    const [error, setError ] = useState("");
+    const navigate = useNavigate();
 
     const today = new Date();
     const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
 
-    types = 'toor';
     const [formData, setFormData] = useState({
         name: '',
         village: '',
@@ -23,9 +30,6 @@ const InvoiceForm = ({types}) => {
         bill: ''
     });
     // console.log('formattedDate : ', formattedDate);
-
-    const receiptRef = useRef();
-    const [error, setError ] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,64 +47,120 @@ const InvoiceForm = ({types}) => {
         console.log('change...', formData);
     };
 
+    // const handleGetDetail = () => {
+    //     setFormData(prevData => ({
+    //         ...prevData,
+    //         dal :  0.7 * Number(prevData.weight),
+    //         bhusa : 0.28 * Number(prevData.weight),
+    //         ghat : Number(prevData.weight) - Number(prevData.dal) - Number(prevData.bhusa),
+    //         bill : Number(prevData.weight) * Number(prevData.rate),
+    //         bill: Number(prevData.bill) - Number(prevData.reduceBill)
+    //     }));
+    //     console.log(formData)
+    // };
+
     const handleGetDetail = () => {
-        setFormData(prevData => ({
-            ...prevData,
-            dal :  0.7 * Number(prevData.weight),
-            bhusa : 0.28 * Number(prevData.weight) ,
-            ghat : Number(prevData.weight) - Number(prevData.dal) - Number(prevData.bhusa),
-            bill : Number(prevData.weight) * Number(prevData.rate),
-            bill: Number(prevData.bill) - Number(prevData.reduceBill)
-        }));
-        console.log(formData)
+        setFormData(prevData => {
+            const calculatedBill = Number(prevData.weight) * Number(prevData.rate);
+    
+            return {
+                ...prevData,
+                dal: 0.7 * Number(prevData.weight),
+                bhusa: 0.28 * Number(prevData.weight),
+                ghat: Number(prevData.weight) - (0.7 * Number(prevData.weight)) - (0.28 * Number(prevData.weight)),
+                bill: prevData.reduceBill ? calculatedBill - Number(prevData.reduceBill) : calculatedBill
+            };
+        });
+    
+        console.log(formData);
     };
 
-
-
-      const handleSubmit = async(e) => {
-    
-        setError('');
-        if ( !formData.name ||!formData.village ||!formData.date ||!formData.phone  ||!formData.type ||!formData.weight ||!formData.rate ||!formData.ghat ||!formData.bhusa ||!formData.dal ||!formData.reduceBill  ||!formData.bill ) {
-            console.log('object', formData, name,village,date,phone,type,weight,rate,ghat,bhusa,dal,reduceBill,bill)
-            setError('Please fill in all fields.');
-            return;
-        }
-    
-        let res = await fetch('http://localhost:5001/api/bills', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-        });
-        console.log('object', res)
-        if (res.ok) {
-            res = await res.json();
-        } else {
-            setError('Login failed. Please try again.');
-            console.error("Failed to login:", res.status, res.statusText, error);
-        }
-    
-        console.log( 'name :', name ,"Email:", email, "Password:", password);
-        alert('Logged in successfully!');
-      };
-
-
+        const handleSubmit = async(e) => {
+            console.log('handle submit : ', )
+            try{
+                setError('');
+                if ( !formData.name ||!formData.village ||!formData.date ||!formData.phone  ||!formData.type ||!formData.weight ||!formData.rate ||!formData.ghat ||!formData.bhusa ||!formData.dal ||!formData.bill ) {
+                    console.log('object', formData, name,village,date,phone,type,weight,rate,ghat,bhusa,dal,reduceBill,bill)
+                    setError('Please fill in all fields.');
+                    return;
+                }
+                
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.log("No token found in localStorage.");
+                    // setLoading(false);
+                    return;
+                }
+                
+                let res = await fetch('http://localhost:5001/api/bills', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(formData),
+                });
+                console.log('object', res)
+                if (res.ok) {
+                    res = await res.json();
+                    res = res.bill;
+                } else {
+                    console.error("Failed to login:", res.status, res.statusText, error);
+                }
+                
+                // console.log( 'bill generated successfully! : ', res);
+                // alert('Logged in successfully!');
+                // setFormData(
+                //     {
+                //         name: '',
+                //         village: '',
+                //         date: formattedDate,
+                //         phone : '',
+                //         type : types,
+                //         weight: '',
+                //         rate: '',
+                //         ghat: '',
+                //         bhusa: '',
+                //         dal: '',
+                //         reduceBill : '',
+                //         bill: ''
+                //     }
+                // );
+            
+            }
+            catch(err){
+                console.error("Error adding bill :", err);
+                setError(err.message);
+                navigate("/login");
+            }
+            finally{
+                // setLoading(false);
+            }
+        };
 
     useEffect(() => {
+
+        let ratePerKg = types === 'toor'? 7 : types === 'moog'? 10 : 7;
+
         setFormData(prevData => ({
             ...prevData,
-            type: types // Update the type with the new value of `types`
+            type: types, 
+            rate: ratePerKg
         }));
     }, [types]);
+
+    if (loading) {
+        return <p className="text-white text-center">Loading...</p>;
+    }
+
    return (
     <>
-    <div className="invoiceForm relative p-8">
-        <div className="contact absolute right-12 top-0 left-auto flex flex-col"><span>Phone : 9403075482</span><span>Phone : 8007771564</span></div>
-        <h2 className="font-bold text-center text-2xl border-b-2 p-2 rounded-sm border-blue-500 my-4 shadow-md capitalize">{types} Dal Invoice</h2>
-    </div>
-    
-    <div className="availableReceipt p-8" ref={receiptRef}>
+        <div className="invoiceForm relative p-8">
+            <div className="contact absolute right-12 top-0 left-auto flex flex-col"><span>Phone : 9403075482</span><span>Phone : 8007771564</span></div>
+            <h2 className="font-bold text-center text-2xl border-b-2 p-2 rounded-sm border-blue-500 my-4 shadow-md capitalize">{types} Dal Invoice</h2>
+        </div>
+                
+        <div className="availableReceipt p-8" ref={receiptRef}>
             <form className="space-y-4 flex justify-center flex-col mx-4 py-4">
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
@@ -127,136 +187,141 @@ const InvoiceForm = ({types}) => {
                         required
                     />
                 </div>
-    <div className="group flex gap-2 w-full">
-    <div className="w-1/2">
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">phone</label>
-                    <input
-                        type="phone"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        required
-                    />
+                <div className="group flex gap-2 w-full">
+                    <div className="w-1/2">
+                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">phone</label>
+                        <input
+                            type="phone"
+                            id="phone"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            required
+                        />
+                    </div>
+                    <div className="w-1/2">
+                        <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
+                        <input
+                            type="text"
+                            id="date"
+                            name="date"
+                            value={formData.date}
+                            // onChange={handleChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            readOnly
+                        />
+                    </div>
                 </div>
-                <div className="w-1/2">
-                    <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
-                    <input
-                        type="text"
-                        id="date"
-                        name="date"
-                        value={formData.date}
-                        // onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        readOnly
-                    />
+                <div className="group flex gap-2 w-full">
+                    <div className="w-1/2">
+                        <label htmlFor="type" className="block text-sm font-medium text-gray-700">Type</label>
+                        <input
+                            type="text"
+                            id="type"
+                            name="type"
+                            value={formData.type}
+                            readOnly
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        />
+                    </div>
+                    <div className="w-1/2">
+                        <label htmlFor="weight" className="block text-sm font-medium text-gray-700">Weight</label>
+                        <input
+                            type="number"
+                            id="weight"
+                            name="weight"
+                            value={formData.weight}
+                            onChange={handleChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            required
+                        />
+                    </div>
                 </div>
-    </div>
-        <div className="group flex gap-2 w-full">
-                <div className="w-1/2">
-                    <label htmlFor="type" className="block text-sm font-medium text-gray-700">Type</label>
-                    <input
-                        type="text"
-                        id="type"
-                        name="type"
-                        value={formData.type}
-                        readOnly
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                    />
-                </div>
+                <div className="group flex gap-2 w-full">
+                    <div className="w-1/2">
+                        <label htmlFor="dal" className="block text-sm font-medium text-gray-700">Dal</label>
+                        <input
+                            type="number"
+                            id="dal"
+                            name="dal"
+                            value={formData.dal}
+                            readOnly
+                            onChange={handleChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            required
+                        />
+                    </div>
 
-                <div className="w-1/2">
-                    <label htmlFor="weight" className="block text-sm font-medium text-gray-700">Weight</label>
-                    <input
-                        type="number"
-                        id="weight"
-                        name="weight"
-                        value={formData.weight}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        required
-                    />
+                    <div className="w-1/2">
+                        <label htmlFor="bhusa" className="block text-sm font-medium text-gray-700">Bhusa</label>
+                        <input
+                            type="number"
+                            id="bhusa"
+                            name="bhusa"
+                            value={formData.bhusa}
+                            onChange={handleChange}
+                            readOnly
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            required
+                        />
+                    </div>
                 </div>
-        </div>
-        <div className="group flex gap-2 w-full">
-        <div className="w-1/2">
-                    <label htmlFor="dal" className="block text-sm font-medium text-gray-700">Dal</label>
-                    <input
-                        type="number"
-                        id="dal"
-                        name="dal"
-                        value={formData.dal}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        required
-                    />
-                </div>
+                <div className="group flex gap-2 w-full">
+                    <div className="w-1/2">
+                        <label htmlFor="ghat" className="block text-sm font-medium text-gray-700">Ghat</label>
+                        <input
+                            type="number"
+                            id="ghat"
+                            name="ghat"
+                            value={formData.ghat}
+                            onChange={handleChange}
+                            readOnly
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            required
+                        />
+                    </div>
 
-                <div className="w-1/2">
-                    <label htmlFor="bhusa" className="block text-sm font-medium text-gray-700">Bhusa</label>
-                    <input
-                        type="number"
-                        id="bhusa"
-                        name="bhusa"
-                        value={formData.bhusa}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        required
-                    />
+                    <div className="w-1/2">
+                        <label htmlFor="reduceBill" className="block text-sm font-medium text-gray-700">Reduce Bill</label>
+                        <input
+                            type="number"
+                            id="reduceBill"
+                            name="reduceBill"
+                            readOnly
+                            value={formData.reduceBill}
+                            onChange={handleChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        />
+                    </div>
                 </div>
-    </div>
-    <div className="group flex gap-2 w-full">
-    <div className="w-1/2">
-                    <label htmlFor="ghat" className="block text-sm font-medium text-gray-700">Ghat</label>
-                    <input
-                        type="number"
-                        id="ghat"
-                        name="ghat"
-                        value={formData.ghat}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        required
-                    />
-                </div>
-
-                <div className="w-1/2">
-                    <label htmlFor="reduceBill" className="block text-sm font-medium text-gray-700">Reduce Bill</label>
-                    <input
-                        type="number"
-                        id="reduceBill"
-                        name="reduceBill"
-                        value={formData.reduceBill}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                    />
-                </div>
-    </div>
-    <div className="group flex gap-2 w-full">
-                <div className="w-1/2">
-                    <label htmlFor="bill" className="block text-sm font-medium text-gray-700">Bill</label>
-                    <input
-                        type="number"
-                        id="bill"
-                        name="bill"
-                        value={formData.bill}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        required
-                    />
-                </div>
-                <div className="w-1/2">
-                    <label htmlFor="rate" className="block text-sm font-medium text-gray-700">Rate</label>
-                    <input
-                        type="number"
-                        id="rate"
-                        name="rate"
-                        value={formData.rate}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        required
-                    />
-                </div>
+                <div className="group flex gap-2 w-full">
+                    <div className="w-1/2">
+                        <label htmlFor="bill" className="block text-sm font-medium text-gray-700">Bill</label>
+                        <input
+                            type="number"
+                            id="bill"
+                            name="bill"
+                            value={formData.bill}
+                            onChange={handleChange}
+                            readOnly
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            required
+                        />
+                    </div>
+                    <div className="w-1/2">
+                        <label htmlFor="rate" className="block text-sm font-medium text-gray-700">Rate</label>
+                        <input
+                            type="number"
+                            id="rate"
+                            name="rate"
+                            value={formData.rate}
+                            onChange={handleChange}
+                            readOnly
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            required
+                        />
+                    </div>
                 </div>
                 <div className="group flex gap-2 w-full">
                     <div className="w-1/2 mx-auto">
@@ -266,12 +331,12 @@ const InvoiceForm = ({types}) => {
                         <button  type="button" onClick={handleGetDetail} className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md w-full">Get Details</button>
                     </div>
                 </div>
-            </form>
-    </div>
-    <div className="printReceipt flex justify-center w-full">
-        <PrintReceipt formData={formData} />
-    </div>
-        </>
+                </form>
+                </div>
+                <div className="printReceipt flex justify-center w-full">
+                    <PrintReceipt formData={formData} />
+                </div>
+            </>
     );
 };
 
