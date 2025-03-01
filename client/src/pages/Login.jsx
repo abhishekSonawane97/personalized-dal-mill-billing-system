@@ -1,6 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserProvider, { UserContext } from '../context/UserProvider';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL; // Vite
+
+
 
 const Login = () => {
     const [name, setName] = useState('');
@@ -23,7 +26,7 @@ const Login = () => {
         }
 
         // You can replace this with an actual API call
-        let res = await fetch('http://localhost:5001/api/user', {
+        let res = await fetch(`${BASE_URL}/user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

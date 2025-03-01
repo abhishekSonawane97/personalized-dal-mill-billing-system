@@ -3,6 +3,8 @@ import PrintReceipt from './PrintReceipt';
 // import { post } from '../../../api/routes/userRoute';
 import { Link } from 'react-router-dom';
 import Popup from './Popup';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 const SearchReceipt = ({ types, isDeliveryMode }) => {
 
@@ -39,7 +41,7 @@ const SearchReceipt = ({ types, isDeliveryMode }) => {
             
             setToken(storedToken);
 
-            const response = await fetch(`http://localhost:5001/api/bills/${searchVal}`, {
+            const response = await fetch(`${BASE_URL}/bills/${searchVal}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -83,7 +85,7 @@ const SearchReceipt = ({ types, isDeliveryMode }) => {
     
             console.log("Sending updatedFormData:", updatedFormData);
     
-            const res = await fetch(`http://localhost:5001/api/bills/${searchVal}`, {
+            const res = await fetch(`${BASE_URL}/bills/${searchVal}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

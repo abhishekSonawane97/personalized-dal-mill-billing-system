@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { TypeContext } from '../context/TypeProvider';
 import { UserContext } from '../context/UserProvider';
 import Popup from './Popup';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const InvoiceForm = ({ isDeliveryMode }) => {
 
@@ -69,7 +70,7 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     return;
                 }
                 
-                let res = await fetch('http://localhost:5001/api/bills', {
+                let res = await fetch(`${BASE_URL}/bills`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -93,25 +94,6 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     setUserMessage("Error submitting bill");
                     setPopupType("error");
                 }
-                
-                // console.log( 'bill generated successfully! : ', res);
-                // alert('Logged in successfully!');
-                // setFormData(
-                //     {
-                //         name: '',
-                //         village: '',
-                //         date: formattedDate,
-                //         phone : '',
-                //         type : types,
-                //         weight: '',
-                //         rate: '',
-                //         ghat: '',
-                //         bhusa: '',
-                //         dal: '',
-                //         reduceBill : '',
-                //         bill: ''
-                //     }
-                // );
             
             }
             catch(err){

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BarChart, Bar, PieChart, Pie, LineChart, Line, Tooltip, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Cell } from "recharts";
 import UserTable from "../components/UserTable";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL; // Vite
+
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]; // Colors for Pie Chart
 
@@ -13,7 +15,7 @@ const Analytics = () => {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("User is not authorized!");
 
-            const res = await fetch("http://localhost:5001/api/bills", {
+            const res = await fetch(`${BASE_URL}/bills`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "Application/JSON",

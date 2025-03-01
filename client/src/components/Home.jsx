@@ -100,17 +100,7 @@ const Home = () => {
           </div>
     </div>
 
-
-
     </div>
-        {/* <div className="invoice_actions flex flex-wrap w-full px-12 space-x-4 justify-center">
-            <div className="invoice border-blue-300 border-2 p-4 rounded-md sm:p-6 my-4  shadow-lg sm:w-full  lg:w-[40%]">
-                    <InvoiceForm types={types}/>
-            </div>
-            <div className="invoice border-blue-300 border-2 p-4 rounded-md sm:p-6 my-4  shadow-lg lg:w-[40%] sm:w-full">
-                    <SearchReceipt types={types}/>
-            </div>
-        </div> */}
     </>
   )
 }
