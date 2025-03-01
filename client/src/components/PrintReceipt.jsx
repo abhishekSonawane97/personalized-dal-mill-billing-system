@@ -99,7 +99,7 @@ const PrintReceipt = ({ formData }) => {
         <div ref={receiptRef} className='w-full flex justify-center'>
             <button type="button"
                 onClick={handlePrint}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md w-1/2 mx-auto">Print</button>
+                className="mt-4 px-4 py-2 w-full bg-blue-600 text-white font-semibold rounded-md mx-auto">Print</button>
         </div>
     );
 };

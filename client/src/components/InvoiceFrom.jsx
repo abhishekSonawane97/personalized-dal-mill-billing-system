@@ -3,8 +3,12 @@ import PrintReceipt from './PrintReceipt';
 import { Link, useNavigate } from 'react-router-dom';
 import { TypeContext } from '../context/TypeProvider';
 import { UserContext } from '../context/UserProvider';
+import Popup from './Popup';
 
-const InvoiceForm = () => {
+const InvoiceForm = ({ isDeliveryMode }) => {
+
+    const [userMessage, setUserMessage] = useState("");
+    const [popupType, setPopupType] = useState("success");
 
     const { types, setTypes } = useContext(TypeContext);
     const { loading, setLoading } = useContext(UserContext);
@@ -47,35 +51,8 @@ const InvoiceForm = () => {
         console.log('change...', formData);
     };
 
-    // const handleGetDetail = () => {
-    //     setFormData(prevData => ({
-    //         ...prevData,
-    //         dal :  0.7 * Number(prevData.weight),
-    //         bhusa : 0.28 * Number(prevData.weight),
-    //         ghat : Number(prevData.weight) - Number(prevData.dal) - Number(prevData.bhusa),
-    //         bill : Number(prevData.weight) * Number(prevData.rate),
-    //         bill: Number(prevData.bill) - Number(prevData.reduceBill)
-    //     }));
-    //     console.log(formData)
-    // };
-
-    const handleGetDetail = () => {
-        setFormData(prevData => {
-            const calculatedBill = Number(prevData.weight) * Number(prevData.rate);
-    
-            return {
-                ...prevData,
-                dal: 0.7 * Number(prevData.weight),
-                bhusa: 0.28 * Number(prevData.weight),
-                ghat: Number(prevData.weight) - (0.7 * Number(prevData.weight)) - (0.28 * Number(prevData.weight)),
-                bill: prevData.reduceBill ? calculatedBill - Number(prevData.reduceBill) : calculatedBill
-            };
-        });
-    
-        console.log(formData);
-    };
-
         const handleSubmit = async(e) => {
+            e.preventDefault();
             console.log('handle submit : ', )
             try{
                 setError('');
@@ -103,9 +80,18 @@ const InvoiceForm = () => {
                 console.log('object', res)
                 if (res.ok) {
                     res = await res.json();
+                    setUserMessage("Bill created successfully!");
+                    setPopupType("success");
+                    setTimeout(() => {
+                        setUserMessage("");
+                    }, 3000);
+
                     res = res.bill;
+
                 } else {
-                    console.error("Failed to login:", res.status, res.statusText, error);
+                    console.error("Failed to create new receipt :", res.status, res.statusText, error);
+                    setUserMessage("Error submitting bill");
+                    setPopupType("error");
                 }
                 
                 // console.log( 'bill generated successfully! : ', res);
@@ -161,8 +147,8 @@ const InvoiceForm = () => {
         </div>
                 
         <div className="availableReceipt p-8" ref={receiptRef}>
-            <form className="space-y-4 flex justify-center flex-col mx-4 py-4">
-                <div>
+            <form className="space-y-4 flex justify-center flex-wrap gap-x-0 mx-4 py-4">
+                <div className='w-full'>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
                     <input
                         type="text"
@@ -175,7 +161,7 @@ const InvoiceForm = () => {
                     />
                 </div>
 
-                <div>
+                <div className='w-full'>
                     <label htmlFor="village" className="block text-sm font-medium text-gray-700">village</label>
                     <input
                         type="text"
@@ -269,34 +255,6 @@ const InvoiceForm = () => {
                 </div>
                 <div className="group flex gap-2 w-full">
                     <div className="w-1/2">
-                        <label htmlFor="ghat" className="block text-sm font-medium text-gray-700">Ghat</label>
-                        <input
-                            type="number"
-                            id="ghat"
-                            name="ghat"
-                            value={formData.ghat}
-                            onChange={handleChange}
-                            readOnly
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                            required
-                        />
-                    </div>
-
-                    <div className="w-1/2">
-                        <label htmlFor="reduceBill" className="block text-sm font-medium text-gray-700">Reduce Bill</label>
-                        <input
-                            type="number"
-                            id="reduceBill"
-                            name="reduceBill"
-                            readOnly
-                            value={formData.reduceBill}
-                            onChange={handleChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                    </div>
-                </div>
-                <div className="group flex gap-2 w-full">
-                    <div className="w-1/2">
                         <label htmlFor="bill" className="block text-sm font-medium text-gray-700">Bill</label>
                         <input
                             type="number"
@@ -323,18 +281,51 @@ const InvoiceForm = () => {
                         />
                     </div>
                 </div>
+                <div className="group flex gap-2  w-full">
+                    <div className={`  ${isDeliveryMode? 'w-1/2' : 'w-full'} `}>
+                        <label htmlFor="ghat" className="block text-sm font-medium text-gray-700">Ghat</label>
+                        <input
+                            type="number"
+                            id="ghat"
+                            name="ghat"
+                            value={formData.ghat}
+                            onChange={handleChange}
+                            readOnly
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            required
+                        />
+                    </div>
+                    {
+                        isDeliveryMode && <div className="w-1/2">
+                            <label htmlFor="reduceBill" className="block text-sm font-medium text-gray-700">Reduce Bill</label>
+                            <input
+                                type="number"
+                                id="reduceBill"
+                                name="reduceBill"
+                                readOnly
+                                value={formData.reduceBill}
+                                onChange={handleChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            />
+                        </div>
+                    }
+                    
+                </div>
                 <div className="group flex gap-2 w-full">
                     <div className="w-1/2 mx-auto">
                         <button type="button" onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md w-full">Submit</button>
                     </div>
                     <div className="w-1/2 mx-auto">
-                        <button  type="button" onClick={handleGetDetail} className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md w-full">Get Details</button>
+                        <div className="printReceipt flex justify-center w-full">
+                            <PrintReceipt formData={formData} />
+                    </div>
                     </div>
                 </div>
                 </form>
-                </div>
-                <div className="printReceipt flex justify-center w-full">
-                    <PrintReceipt formData={formData} />
+
+                {userMessage && <Popup message={userMessage} type={popupType} onClose={() => setUserMessage("")} />}
+
+
                 </div>
             </>
     );

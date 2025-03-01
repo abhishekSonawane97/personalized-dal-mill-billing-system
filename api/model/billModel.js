@@ -50,8 +50,8 @@ const billSchema = mongoose.Schema({
         type : String,
         required : [ true, 'Please enter a rate.' ],
     },
-    isDelevered : {
-        type : String,
+    isDelivered : {
+        type : Boolean,
         default: false,
     },
 },{

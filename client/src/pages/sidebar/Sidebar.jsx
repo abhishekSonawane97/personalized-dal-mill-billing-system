@@ -31,8 +31,9 @@ const Sidebar = () => {
     }, [user]);
 
     return (
-        <div className={`flex h-20 bg-gradient-to-r from-indigo-800 to-blue-900 relative items-center ${isOpen ? 'min-h-screen' : '' }`}>
-            <aside className={`bg-white dark:bg-gray-800 w-full min-h-screen flex flex-col transition-all absolute left-0 duration-300 ease-in-out transform ${isOpen ? '' : '-translate-x-full z-10'}`}>
+        <div className={`flex h-20 bg-gradient-to-r from-indigo-800 to-blue-900 items-center ${isOpen ? '' : '' }`}>
+            {/* <aside className={`bg-white dark:bg-gray-800 w-full min-h-screen flex flex-col transition-all absolute left-0 duration-300 ease-in-out transform ${isOpen ? '' : '-translate-x-full z-10'}`}> */}
+            <aside className={`bg-white w-full absolute dark:bg-gray-800 min-h-screen flex flex-col transition-all z-10 left-0 top-0 duration-300 ease-in-out transform ${isOpen ? 'min-h-screen' : '-translate-x-full z-10'} md:w-1/2 w-full lg:w-1/3`}>
                 <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
                 <h1 className="text-2xl font-bold text-indigo-800  dark:text-white mx-4">Sai Dal Mill</h1>
                     <button onClick={()=>handleLink()} className="text-gray-500 hover:text-indigo-800 dark:text-gray-400 dark:hover:text-white font-bold text-2xl focus:outline-none">X

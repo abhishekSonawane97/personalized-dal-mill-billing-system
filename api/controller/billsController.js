@@ -45,6 +45,8 @@ const getBill = asyncHandler(async(req, res)=>{
 const addBill = asyncHandler(async(req, res)=>{
 
     try{
+
+        console.log('add new bill requested from user : ', req.user)
         const {name, village, phone, date, type, weight, dal, bhusa, ghat, reduceBill, bill, rate } = req.body;
         
         if( !name || !village || !phone || !date || !type || !weight || !dal || !bhusa || !ghat || !bill || !rate ){
@@ -53,7 +55,7 @@ const addBill = asyncHandler(async(req, res)=>{
         }
     
         let billData = {
-            name, village, phone, date, type, weight, dal:String(dal), bhusa:String(bhusa), ghat : String(ghat), reduceBill, bill : String(bill), rate 
+            name, village, phone, date, type, weight, dal:String(dal), bhusa:String(bhusa), ghat : String(ghat), reduceBill, bill : String(bill), rate , isDelivered: false,
         };
         console.log('billData : ', billData );
 
@@ -69,10 +71,40 @@ const addBill = asyncHandler(async(req, res)=>{
 // @desc Edit bill --->
 // @route GET /api/bills
 // @access public
-const editBill = asyncHandler(async(req, res)=>{
+const editBill = asyncHandler(async (req, res) => {
 
-    res.status(200).json({"message" : "List of all bills."})
-})
+    try {
+        console.log('Delivery bill requested from user:', req.user);
+
+        const { _id, name, village, phone, date, type, weight, dal, bhusa, ghat, reduceBill, bill, rate, isDelivered } = req.body;
+
+        console.log('isDelivered:', isDelivered);
+        console.log(req.body);
+
+        if (!name || !village || !phone || !date || !type || !weight || !dal || !bhusa || !ghat || !bill || !rate || !isDelivered || !_id) {
+            return res.status(400).json({ error: 'Please fill in all fields.' });
+        }
+
+        let updatedBill = await Bill.findById(_id);
+        if (!updatedBill) return res.status(404).json({ error: "Bill not found." });
+        
+        if (updatedBill.isDelivered) return res.status(400).json({ error: "Bill is already delivered." })
+        
+        // Update only if not delivered
+        const newBill = await Bill.findByIdAndUpdate(
+            _id,
+            { isDelivered: true },
+            { new: true }
+        );
+        
+        return res.status(200).json({ message: "Bill updated successfully", bill: newBill });
+
+    } catch (err) {
+        console.log('Error updating bill:', err);
+        res.status(400).json({ message: 'Error updating bill', error: err });
+    }
+});
+
 
 // @desc Delete bill --->
 // @route GET /api/bills

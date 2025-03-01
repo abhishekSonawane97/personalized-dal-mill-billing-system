@@ -28,9 +28,10 @@ const App = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/print-receipt" element={<PrintReceipt />} />
-                    <Route path="/search-receipt" element={<SearchReceipt />} />
+                    <Route path="/search-receipt" element={<SearchReceipt isDeliveryMode={false} />} />
+                    <Route path="/deliver" element={<SearchReceipt isDeliveryMode={true} />} />
                     <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/type/:ele" element={<InvoiceForm />} />
+                    <Route path="/type/:ele" element={<InvoiceForm isDeliveryMode={false} />} />
                   </Routes>
                 {/* </TypeProvider> */}
               </div>

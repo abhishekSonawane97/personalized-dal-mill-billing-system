@@ -5,7 +5,7 @@ const validateToken = require("../middleware/validateTokenHandler.js");
 const router = express.Router();
 
 // get all users --->
-// router.get( "/" , getUsers );
+// router.get( "/" , getUsers );  
 
 // get partucular user --->
 router.get("/", validateToken, getUser );
