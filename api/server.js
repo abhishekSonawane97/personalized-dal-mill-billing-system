@@ -11,8 +11,8 @@ connectDb();
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use("/user", UserRouter);
-app.use("/bills", BillRouter);
+app.use("/api/user", UserRouter);
+app.use("/api/bills", BillRouter);
 app.use(errorHandler);
 
 

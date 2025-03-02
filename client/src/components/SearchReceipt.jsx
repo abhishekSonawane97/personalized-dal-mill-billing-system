@@ -41,7 +41,7 @@ const SearchReceipt = ({ types, isDeliveryMode }) => {
             
             setToken(storedToken);
 
-            const response = await fetch(`http://ec2-51-20-249-128.eu-north-1.compute.amazonaws.com/api/bills/${searchVal}`, {
+            const response = await fetch(`${BASE_URL}/bills/${searchVal}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -85,7 +85,7 @@ const SearchReceipt = ({ types, isDeliveryMode }) => {
     
             console.log("Sending updatedFormData:", updatedFormData);
     
-            const res = await fetch(`http://ec2-51-20-249-128.eu-north-1.compute.amazonaws.com/api/bills/${searchVal}`, {
+            const res = await fetch(`${BASE_URL}/bills/${searchVal}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
