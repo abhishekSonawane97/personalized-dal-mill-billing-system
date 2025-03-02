@@ -70,7 +70,7 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     return;
                 }
                 
-                let res = await fetch(`${BASE_URL}/bills`, {
+                let res = await fetch("http://ec2-51-20-249-128.eu-north-1.compute.amazonaws.com/api/bills", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
