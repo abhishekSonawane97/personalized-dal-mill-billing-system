@@ -28,7 +28,7 @@ const UserProvider = ({ children }) => {
 
     try {
       setLoading(true);
-        const response = await fetch(`${BASE_URL}/user`, {
+        const response = await fetch("http://ec2-51-20-249-128.eu-north-1.compute.amazonaws.com/api/user", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

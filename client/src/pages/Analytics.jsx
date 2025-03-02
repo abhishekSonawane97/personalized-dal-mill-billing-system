@@ -15,7 +15,7 @@ const Analytics = () => {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("User is not authorized!");
 
-            const res = await fetch(`${BASE_URL}/bills`, {
+            const res = await fetch("http://ec2-51-20-249-128.eu-north-1.compute.amazonaws.com/api/bills", {
                 method: "GET",
                 headers: {
                     "Content-Type": "Application/JSON",
