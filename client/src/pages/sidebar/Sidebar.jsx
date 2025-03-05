@@ -51,31 +51,26 @@ const Sidebar = () => {
                         </li>
                         <li className="menu-item-hover animate-fade-in" style={{ animationDelay: '0.4s' }}>
                             <Link to={ user? "/deliver" : '/login' } className="flex items-center p-2 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors duration-300" onClick={handleLink} >
-                                {/* <SettingsIcon className="h-6 w-6 mr-3" /> */}
                                 Deliver Dal
                             </Link>
                         </li>
                         <li className="menu-item-hover animate-fade-in" style={{ animationDelay: '0.3s' }}>
-                            <Link to={ user? "/deliver" : '/login' } className="flex items-center p-2 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors duration-300"  >
-                                {/* <MessagesIcon className="h-6 w-6 mr-3" /> */}
+                            <Link to={ user? "/type/toor" : '/login' } className="flex items-center p-2 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors duration-300" onClick={()=> handleLink('toor')}>
                                 Toor
                             </Link>
                         </li>
                         <li className="menu-item-hover animate-fade-in" style={{ animationDelay: '0.4s' }}>
                             <Link to={ user? "/type/moog" : '/login' }className="flex items-center p-2 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors duration-300" onClick={()=> handleLink('moog')} >
-                                {/* <SettingsIcon className="h-6 w-6 mr-3" /> */}
                                 Moog
                             </Link>
                         </li>
                         <li className="menu-item-hover animate-fade-in" style={{ animationDelay: '0.4s' }}>
                             <Link to={ user? "/type/udid" : '/login' } className="flex items-center p-2 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors duration-300" onClick={()=> handleLink('udid')} >
-                                {/* <SettingsIcon className="h-6 w-6 mr-3" /> */}
                                 Udid
                             </Link>
                         </li>
                         <li className="menu-item-hover animate-fade-in" style={{ animationDelay: '0.2s' }}>
                             <Link to={ user? "/Analytics" : '/login' }className="flex items-center p-2 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors duration-300" onClick={handleLink} >
-                                {/* <AnalyticsIcon className="h-6 w-6 mr-3" /> */}
                                 Analytics
                             </Link>
                         </li>
