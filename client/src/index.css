@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+#google_translate_element{
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    max-width: 120px;
+    max-height: 50px;
+    overflow-y:auto;
+    overflow-x: hidden;
+    border: none;
+    display: flex;
+    background: transparent;
+    color:white;
+    border: 1px solid;
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+#google_translate_element *{
+    background:transparent;
+    color:white;
+    border: none;
+}
+#google_translate_element img{
+    display:none;
+}
+.goog-te-gadget-simple span > a{
+    display:flex;
+    gap: 10px;
+}
+#\:0\.targetLanguage > span:nth-child(4){
+    display: none !important;
+}
