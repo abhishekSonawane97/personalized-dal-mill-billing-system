@@ -1,8 +1,11 @@
 // ReceiptPrinter.js
 import React, { useRef } from 'react';
+import { useContext } from 'react';
+import { UserContext } from '../context/UserProvider';
 
 const PrintReceipt = ({ formData }) => {
     const receiptRef = useRef(); // Reference for the receipt content
+    const { user } = useContext(UserContext);
 
     const handlePrint = (e) => {
         e.preventDefault();
@@ -12,77 +15,52 @@ const PrintReceipt = ({ formData }) => {
             printWindow.document.write(`
                 <html>
                 <head>
-                    <title>receipt</title>
+                    <title>Receipt</title>
                     <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        body { font-family: Arial, sans-serif; margin: 15px; }
                         h1 { text-align: center; }
-                        .receipt { padding: 20px; border: 2px solid #333; border-radius: 8px; }
-                        .header { text-align: center; margin-bottom: 20px; }
+                        .receipt { padding: 20px; border: 2px solid #333; border-radius: 8px; width: 90%; margin: auto; }
+                        .header { text-align: center; margin-bottom: 15px; }
                         .header h1 { margin: 0; }
-                        .header p { margin: 5px 0; }
-                        .section { margin-bottom: 15px; display: flex; }
-                        .section label { font-weight: bold; width: 50%; }
-                        .section p { margin: 5px 0; width: 50%; }
-                        .footer { margin-top: 20px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; }
-                        .full-width { width: 100%; } /* For full-width fields */
- </style>
+                        .header p { margin: 5px 0; font-weight: bold; }
+                        .info-section { display: flex; justify-content: space-between; margin-bottom: 15px; }
+                        .info-section div { flex: 1; }
+                        .table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        .table th, .table td { border: 1px solid #333; padding: 8px; text-align: left; }
+                        .table th { background: #f4f4f4; }
+                        .footer { margin-top: 20px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; font-weight: bold; }
+                    </style>
                 </head>
-                <body                    <div class="receipt" ref={receiptRef}>
+                <body>
+                    <div class="receipt">
                         <div class="header">
-                        <div className="contact absolute right-0 top-0 left-auto flex flex-col"><span>Phone : 9403075482 </span><span> Phone : 8007771564</span></div>
-                            <h1>Sai Dal Mill</h1>
-                            <p>Thank you for your business!</p>
+                            <div style="display:flex; justify-content:space-between;"><span>Phone: 9403075482</span><span>Phone: 8007771564</span></div>
+                            <h1>!! साई दाळ मिल !!</h1>
+                            <p>आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
                         </div>
-                        <div="section full-width">
-                            <label>Name:</label>
-                            <p>${formData.name}</p>
+                        <div class="info-section">
+                            <div><strong>Name:</strong> ${formData.name}</div>
+                            <div><strong>Date:</strong> ${formData.date}</div>
                         </div>
-                        <div class="section full-width">
-                            <label>Village:</label>
-                            <p>${formData.village}</p>
+                        <div class="info-section">
+                            <div><strong>Village:</strong> ${formData.village}</div>
+                            <div><strong>Phone:</strong> ${formData.phone}</div>
                         </div>
-                        <div class="section">
-                            <label>Date:</label>
-                            <p>${formData.date}</p>
-                        </div>
-                        <div class="section">
-                            <label>Phone:</label>
-                            <p>${formData.phone}</p>
-                        </div>
-                        <div class="section">
-                            <label>Type:</label>
-                            <p>${formData.type}</p>
-                        </div>
-                        <div class="section">
-                            <label>Weight:</label>
-                            <p>${formData.weight}</p>
-                        </div>
-                        <div class="section">
-                            <label>Rate:</label>
-                            <p>${formData.rate}</p>
-                        </div>
-                        <div class="section">
-                            <label>Ghat:</label>
-                            <p>${formData.ghat}</p>
-                        </div>
-                        <div class="section">
-                            <label>Bhusa:</label>
-                            <p>${formData.bhusa}</p>
-                        </div>
-                        <div class="section">
-                            <label>Dal:</label>
-                            <p>${formData.dal}</p>
-                        </div>
-                        <div class="section">
-                            <label>Reduce Bill:</label>
-                            <p>${formData.reduceBill}</p>
-                        </div>
-                        <div class="section">
-                            <label>Bill:</label>
-                            <p>${formData.bill}</p>
+                        <table class="table">
+                            <tr><th>Type</th><td>${formData.type}</td></tr>
+                            <tr><th>Weight</th><td>${formData.weight}</td></tr>
+                            <tr><th>Rate</th><td>${formData.rate}</td></tr>
+                            <tr><th>Ghat</th><td>${formData.ghat}</td></tr>
+                            <tr><th>Bhusa</th><td>${formData.bhusa}</td></tr>
+                            <tr><th>Dal</th><td>${formData.dal}</td></tr>
+                            <tr><th>Reduce Bill</th><td>${formData.reduceBill}</td></tr>
+                            <tr><th>Total Bill</th><td>${formData.bill}</td></tr>
+                        </table>
+                        <div class="info-section">
+                            <div style="margin:10px 5px;"><strong>Delivered By:</strong> ${user?.name || ''}</div>
                         </div>
                         <div class="footer">
-                            <p>We appreciate your business!</p>
+                            <p>आपल्या व्यवहारासाठी मनःपूर्वक धन्यवाद! आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
                         </div>
                     </div>
                 </body>
@@ -91,7 +69,7 @@ const PrintReceipt = ({ formData }) => {
             printWindow.document.close();
             printWindow.focus();
             printWindow.print();
-            printWindow.close(); // Close the print window after printing
+            printWindow.close();
         }
     };
 
@@ -99,7 +77,9 @@ const PrintReceipt = ({ formData }) => {
         <div ref={receiptRef} className='w-full flex justify-center'>
             <button type="button"
                 onClick={handlePrint}
-                className="mt-4 px-4 py-2 w-full bg-blue-600 text-white font-semibold rounded-md mx-auto">Print</button>
+                className="mt-4 px-4 py-2 w-full bg-blue-600 text-white font-semibold rounded-md mx-auto">
+                Print
+            </button>
         </div>
     );
 };
