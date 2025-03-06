@@ -35,3 +35,8 @@
 #\:0\.targetLanguage > span:nth-child(4){
     display: none !important;
 }
+
+@media print {
+    body { visibility: hidden; }
+    .receipt { visibility: visible; position: absolute; top: 0; left: 0; width: 100%; }
+}

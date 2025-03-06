@@ -1,85 +1,161 @@
-// ReceiptPrinter.js
 import React, { useRef } from 'react';
 import { useContext } from 'react';
 import { UserContext } from '../context/UserProvider';
 
 const PrintReceipt = ({ formData }) => {
-    const receiptRef = useRef(); // Reference for the receipt content
+    const receiptRef = useRef(); 
     const { user } = useContext(UserContext);
 
     const handlePrint = (e) => {
         e.preventDefault();
-        const printWindow = window.open('', '_blank', 'width=500,height=600');
-    
-        if (printWindow) {
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Receipt</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 15px; }
-                        h1 { text-align: center; }
-                        .receipt { padding: 20px; border: 2px solid #333; border-radius: 8px; width: 90%; margin: auto; }
-                        .header { text-align: center; margin-bottom: 15px; }
-                        .header h1 { margin: 0; }
-                        .header p { margin: 5px 0; font-weight: bold; }
-                        .info-section { display: flex; justify-content: space-between; margin-bottom: 15px; }
-                        .info-section div { flex: 1; }
-                        .table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        .table th, .table td { border: 1px solid #333; padding: 8px; text-align: left; }
-                        .table th { background: #f4f4f4; }
-                        .footer { margin-top: 20px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; font-weight: bold; }
-                        @media print {
-                            body { visibility: hidden; }
-                            .receipt { visibility: visible; position: absolute; top: 0; left: 0; width: 90%; }
+
+        // Create an iframe for printing
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.width = '0px';
+        iframe.style.height = '0px';
+        iframe.style.border = 'none';
+        document.body.appendChild(iframe);
+
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+            <html>
+            <head>
+                <title>Receipt</title>
+                <style>
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 10px;
+                        padding: 10px;
+                        background: #fff;
+                        word-wrap: break-word;
+                    }
+                    .receipt {
+                        max-width: 100%;
+                        width: 90%;
+                        margin: auto;
+                        padding: 20px;
+                        border: 2px solid #333;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        word-break: break-word;
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 25px;
+                        margin-top: 15px;
+                    }
+                    .header h1 {
+                        font-size: 20px;
+                        margin: 5px 0;
+                    }
+                    .header p {
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+                    .info-section {
+                        display: flex;
+                        justify-content: space-between;
+                        flex-wrap: wrap;
+                        margin-bottom: 10px;
+                    }
+                    .info-section div {
+                        flex: 1;
+                        min-width: 45%;
+                        padding: 5px;
+                    }
+                    .table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 10px;
+                    }
+                    .table th, .table td {
+                        border: 1px solid #333;
+                        padding: 6px;
+                        text-align: left;
+                        font-size: 14px;
+                        word-break: break-word;
+                    }
+                    .table th {
+                        background: #f4f4f4;
+                    }
+                    .footer {
+                        margin-top: 15px;
+                        text-align: center;
+                        border-top: 1px solid #ccc;
+                        padding-top: 10px;
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+                    @media print {
+                        body {
+                            visibility: hidden;
                         }
-                    </style>
-                </head>
-                <body>
-                    <div class="receipt">
-                        <div class="header">
-                            <div style="display:flex; justify-content:space-between;"><span>Phone: 9403075482</span><span>Phone: 8007771564</span></div>
-                            <h1>!! साई दाळ मिल !!</h1>
-                            <p>आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
+                        .receipt {
+                            visibility: visible;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            margin: 0 auto;
+                            padding: 20px;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="receipt">
+                    <div class="header">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Phone: 9403075482</span><span>Phone: 8007771564</span>
                         </div>
-                        <div class="info-section">
-                            <div><strong>Name:</strong> ${formData.name}</div>
-                            <div><strong>Date:</strong> ${formData.date}</div>
-                        </div>
-                        <div class="info-section">
-                            <div><strong>Village:</strong> ${formData.village}</div>
-                            <div><strong>Phone:</strong> ${formData.phone}</div>
-                        </div>
-                        <table class="table">
-                            <tr><th>Type</th><td>${formData.type}</td></tr>
-                            <tr><th>Weight</th><td>${formData.weight}</td></tr>
-                            <tr><th>Rate</th><td>${formData.rate}</td></tr>
-                            <tr><th>Ghat</th><td>${formData.ghat}</td></tr>
-                            <tr><th>Bhusa</th><td>${formData.bhusa}</td></tr>
-                            <tr><th>Dal</th><td>${formData.dal}</td></tr>
-                            <tr><th>Reduce Bill</th><td>${formData.reduceBill}</td></tr>
-                            <tr><th>Total Bill</th><td>${formData.bill}</td></tr>
-                        </table>
-                        <div class="info-section">
-                            <div style="margin:10px 5px;"><strong>Delivered By:</strong> ${user?.name || ''}</div>
-                        </div>
-                        <div class="footer">
-                            <p>आपल्या व्यवहारासाठी मनःपूर्वक धन्यवाद! आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
-                        </div>
+                        <h1>!! साई दाळ मिल !!</h1>
+                        <p>आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
                     </div>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.focus();
-    
+                    <div class="info-section">
+                        <div><strong>Name:</strong> ${formData.name}</div>
+                        <div><strong>Date:</strong> ${formData.date}</div>
+                    </div>
+                    <div class="info-section">
+                        <div><strong>Village:</strong> ${formData.village}</div>
+                        <div><strong>Phone:</strong> ${formData.phone}</div>
+                    </div>
+                    <table class="table">
+                        <tr><th>Type</th><td>${formData.type}</td></tr>
+                        <tr><th>Weight</th><td>${formData.weight}</td></tr>
+                        <tr><th>Rate</th><td>${formData.rate}</td></tr>
+                        <tr><th>Ghat</th><td>${formData.ghat}</td></tr>
+                        <tr><th>Bhusa</th><td>${formData.bhusa}</td></tr>
+                        <tr><th>Dal</th><td>${formData.dal}</td></tr>
+                        <tr><th>Reduce Bill</th><td>${formData.reduceBill}</td></tr>
+                        <tr><th>Total Bill</th><td>${formData.bill}</td></tr>
+                    </table>
+                    <div class="info-section">
+                        <div style="margin:10px 5px;"><strong>Delivered By:</strong> ${user?.name || ''}</div>
+                    </div>
+                    <div class="footer">
+                        <p>आपल्या व्यवहारासाठी मनःपूर्वक धन्यवाद! आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `);
+        doc.close();
+
+        // Wait until the iframe loads and then print
+        iframe.onload = () => {
             setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
-            }, 500);
-        }
+                iframe.contentWindow.print();
+                document.body.removeChild(iframe);
+            }, 1000);
+        };
     };
-    
 
     return (
         <div ref={receiptRef} className='w-full flex justify-center'>
