@@ -9,8 +9,8 @@ const PrintReceipt = ({ formData }) => {
 
     const handlePrint = (e) => {
         e.preventDefault();
-        const printWindow = window.open('', '_blank', 'width=600,height=600');
-
+        const printWindow = window.open('', '_blank', 'width=500,height=600');
+    
         if (printWindow) {
             printWindow.document.write(`
                 <html>
@@ -29,6 +29,10 @@ const PrintReceipt = ({ formData }) => {
                         .table th, .table td { border: 1px solid #333; padding: 8px; text-align: left; }
                         .table th { background: #f4f4f4; }
                         .footer { margin-top: 20px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; font-weight: bold; }
+                        @media print {
+                            body { visibility: hidden; }
+                            .receipt { visibility: visible; position: absolute; top: 0; left: 0; width: 90%; }
+                        }
                     </style>
                 </head>
                 <body>
@@ -68,10 +72,14 @@ const PrintReceipt = ({ formData }) => {
             `);
             printWindow.document.close();
             printWindow.focus();
-            printWindow.print();
-            printWindow.close();
+    
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
         }
     };
+    
 
     return (
         <div ref={receiptRef} className='w-full flex justify-center'>
