@@ -3,7 +3,6 @@ import { useContext } from 'react';
 import { UserContext } from '../context/UserProvider';
 
 const PrintReceipt = ({ formData }) => {
-    const receiptRef = useRef(); 
     const { user } = useContext(UserContext);
 
     const handlePrint = (e) => {
@@ -31,14 +30,13 @@ const PrintReceipt = ({ formData }) => {
                     }
                     body {
                         font-family: Arial, sans-serif;
-                        margin: 10px;
-                        padding: 10px;
                         background: #fff;
-                        word-wrap: break-word;
+                        margin: 0;
+                        padding: 10px;
                     }
                     .receipt {
-                        max-width: 100%;
                         width: 90%;
+                        max-width: 600px;
                         margin: auto;
                         padding: 20px;
                         border: 2px solid #333;
@@ -48,16 +46,11 @@ const PrintReceipt = ({ formData }) => {
                     }
                     .header {
                         text-align: center;
-                        margin-bottom: 25px;
-                        margin-top: 15px;
+                        margin-bottom: 15px;
                     }
                     .header h1 {
                         font-size: 20px;
                         margin: 5px 0;
-                    }
-                    .header p {
-                        font-size: 14px;
-                        font-weight: bold;
                     }
                     .info-section {
                         display: flex;
@@ -81,9 +74,6 @@ const PrintReceipt = ({ formData }) => {
                         text-align: left;
                         font-size: 14px;
                         word-break: break-word;
-                    }
-                    .table th {
-                        background: #f4f4f4;
                     }
                     .footer {
                         margin-top: 15px;
@@ -148,17 +138,17 @@ const PrintReceipt = ({ formData }) => {
         `);
         doc.close();
 
-        // Wait until the iframe loads and then print
+        // Wait for content to load before printing
         iframe.onload = () => {
             setTimeout(() => {
                 iframe.contentWindow.print();
                 document.body.removeChild(iframe);
-            }, 1000);
+            }, 500); // Slight delay to ensure content is fully loaded
         };
     };
 
     return (
-        <div ref={receiptRef} className='w-full flex justify-center'>
+        <div className='w-full flex justify-center'>
             <button type="button"
                 onClick={handlePrint}
                 className="mt-4 px-4 py-2 w-full bg-blue-600 text-white font-semibold rounded-md mx-auto">
