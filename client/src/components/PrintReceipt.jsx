@@ -1,5 +1,4 @@
-import React, { useRef } from 'react';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { UserContext } from '../context/UserProvider';
 
 const PrintReceipt = ({ formData }) => {
@@ -8,7 +7,6 @@ const PrintReceipt = ({ formData }) => {
     const handlePrint = (e) => {
         e.preventDefault();
 
-        // Create an iframe for printing
         const iframe = document.createElement('iframe');
         iframe.style.position = 'absolute';
         iframe.style.width = '0px';
@@ -99,7 +97,7 @@ const PrintReceipt = ({ formData }) => {
                     }
                 </style>
             </head>
-            <body>
+            <body onload="setTimeout(() => { window.print(); }, 1000)">
                 <div class="receipt">
                     <div class="header">
                         <div style="display:flex; justify-content:space-between;">
@@ -138,12 +136,12 @@ const PrintReceipt = ({ formData }) => {
         `);
         doc.close();
 
-        // Wait for content to load before printing
         iframe.onload = () => {
             setTimeout(() => {
+                iframe.contentWindow.document.body.offsetHeight; // Forces reflow before printing
                 iframe.contentWindow.print();
                 document.body.removeChild(iframe);
-            }, 500); // Slight delay to ensure content is fully loaded
+            }, 1500); // Increased delay to ensure rendering before print
         };
     };
 
