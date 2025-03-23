@@ -94,13 +94,13 @@ const Sidebar = () => {
             </aside>
             <div className='flex justify-between w-full px-6'>
             <button onClick={sidebarToggle} className="text-white hover:text-indigo-200 focus:outline-none mb-4 text-6xl flex items-center">
-                <h1 className="text-2xl font-bold text-white dark:text-white mx-4">Sai Dal Mill ☰ </h1>
+                <h1 className="text-2xl font-bold text-white dark:text-white mx-4">Menu ☰ </h1>
                 </button>
             <div className="px-4 mb-6">
                 {
                     user? (
                         <Link to="/" className="flex items-center text-white dark:text-white hover:text-white-800 dark:hover:text-white transition-colors duration-300" onClick={()=>handleLink()}>
-                            <img src="https://i.pravatar.cc/40?img=1" alt="User avatar" className="w-8 h-8 rounded-full mr-3" />
+                            {/* <img src="https://i.pravatar.cc/40?img=1" alt="User avatar" className="w-8 h-8 rounded-full mr-3" /> */}
                             <span className="font-medium">{user.name}</span>
                         </Link>
                     ) : (
