@@ -1,156 +1,81 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { UserContext } from '../context/UserProvider';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const PrintReceipt = ({ formData }) => {
     const { user } = useContext(UserContext);
+    const receiptRef = useRef(null);
 
-    const handlePrint = (e) => {
-        e.preventDefault();
-
-        const iframe = document.createElement('iframe');
-        iframe.style.position = 'absolute';
-        iframe.style.width = '0px';
-        iframe.style.height = '0px';
-        iframe.style.border = 'none';
-        document.body.appendChild(iframe);
-
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(`
-            <html>
-            <head>
-                <title>Receipt</title>
-                <style>
-                    * {
-                        margin: 0;
-                        padding: 0;
-                        box-sizing: border-box;
-                    }
-                    body {
-                        font-family: Arial, sans-serif;
-                        background: #fff;
-                        margin: 0;
-                        padding: 10px;
-                    }
-                    .receipt {
-                        width: 90%;
-                        max-width: 600px;
-                        margin: auto;
-                        padding: 20px;
-                        border: 2px solid #333;
-                        border-radius: 8px;
-                        overflow: hidden;
-                        word-break: break-word;
-                    }
-                    .header {
-                        text-align: center;
-                        margin-bottom: 15px;
-                    }
-                    .header h1 {
-                        font-size: 20px;
-                        margin: 5px 0;
-                    }
-                    .info-section {
-                        display: flex;
-                        justify-content: space-between;
-                        flex-wrap: wrap;
-                        margin-bottom: 10px;
-                    }
-                    .info-section div {
-                        flex: 1;
-                        min-width: 45%;
-                        padding: 5px;
-                    }
-                    .table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-top: 10px;
-                    }
-                    .table th, .table td {
-                        border: 1px solid #333;
-                        padding: 6px;
-                        text-align: left;
-                        font-size: 14px;
-                        word-break: break-word;
-                    }
-                    .footer {
-                        margin-top: 15px;
-                        text-align: center;
-                        border-top: 1px solid #ccc;
-                        padding-top: 10px;
-                        font-size: 14px;
-                        font-weight: bold;
-                    }
-                    @media print {
-                        body {
-                            visibility: hidden;
-                        }
-                        .receipt {
-                            visibility: visible;
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: 100%;
-                            margin: 0 auto;
-                            padding: 20px;
-                        }
-                    }
-                </style>
-            </head>
-            <body onload="setTimeout(() => { window.print(); }, 1000)">
-                <div class="receipt">
-                    <div class="header">
-                        <div style="display:flex; justify-content:space-between;">
-                            <span>Phone: 9403075482</span><span>Phone: 8007771564</span>
-                        </div>
-                        <h1>!! साई दाळ मिल !!</h1>
-                        <p>आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
-                    </div>
-                    <div class="info-section">
-                        <div><strong>Name:</strong> ${formData.name}</div>
-                        <div><strong>Date:</strong> ${formData.date}</div>
-                    </div>
-                    <div class="info-section">
-                        <div><strong>Village:</strong> ${formData.village}</div>
-                        <div><strong>Phone:</strong> ${formData.phone}</div>
-                    </div>
-                    <table class="table">
-                        <tr><th>Type</th><td>${formData.type}</td></tr>
-                        <tr><th>Weight</th><td>${formData.weight}</td></tr>
-                        <tr><th>Rate</th><td>${formData.rate}</td></tr>
-                        <tr><th>Ghat</th><td>${formData.ghat}</td></tr>
-                        <tr><th>Bhusa</th><td>${formData.bhusa}</td></tr>
-                        <tr><th>Dal</th><td>${formData.dal}</td></tr>
-                        <tr><th>Reduce Bill</th><td>${formData.reduceBill}</td></tr>
-                        <tr><th>Total Bill</th><td>${formData.bill}</td></tr>
-                    </table>
-                    <div class="info-section">
-                        <div style="margin:10px 5px;"><strong>Delivered By:</strong> ${user?.name || ''}</div>
-                    </div>
-                    <div class="footer">
-                        <p>आपल्या व्यवहारासाठी मनःपूर्वक धन्यवाद! आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `);
-        doc.close();
-
-        iframe.onload = () => {
-            setTimeout(() => {
-                iframe.contentWindow.document.body.offsetHeight; // Forces reflow before printing
-                iframe.contentWindow.print();
-                document.body.removeChild(iframe);
-            }, 1500); // Increased delay to ensure rendering before print
-        };
+    const handleGeneratePDF = async () => {
+        const receiptElement = receiptRef.current;
+        const canvas = await html2canvas(receiptElement, { scale: 3 });
+        const imgData = canvas.toDataURL('image/png');
+        
+        const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+        pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+        pdf.save('receipt.pdf');
     };
 
     return (
-        <div className='w-full flex justify-center'>
-            <button type="button"
-                onClick={handlePrint}
-                className="mt-4 px-4 py-2 w-full bg-blue-600 text-white font-semibold rounded-md mx-auto">
-                Print
+        <div className='w-full flex flex-col items-center'>
+            <div className="receipt-container" ref={receiptRef} style={{ width: '210mm', height: '297mm', padding: '20mm', border: '2px solid black', background: '#fff' }}>
+                {/* Header */}
+                <div className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <img src="/sai_mill_logo.png" style={{ width: '80px', height: '80px' }} />
+                    <div className="header-title" style={{ textAlign: 'center', flexGrow: 1 }}>
+                        <h1 style={{ fontSize: '24px', margin: '0' }}>!! साई दाळ मिल !!</h1>
+                        <p style={{ fontSize: '14px', margin: '0' }}>आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
+                    </div>
+                </div>
+
+                {/* Customer Info in 2/2 layout */}
+                <div className="info" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '14px' }}>
+                    <p><strong>नाव:</strong> {formData.name}</p>
+                    <p><strong>गाव:</strong> {formData.village}</p>
+                    <p><strong>दिनांक:</strong> {formData.date}</p>
+                    <p><strong>फोन:</strong> {formData.phone}</p>
+                </div>
+
+                {/* Table */}
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+                    <tbody>
+                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>प्रकार</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.type}</td></tr>
+                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>वजन</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.weight}</td></tr>
+                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>दर</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.rate}</td></tr>
+                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>घट</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.ghat}</td></tr>
+                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>भुशा</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.bhusa}</td></tr>
+                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>डाळ</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.dal}</td></tr>
+                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>कमी बिल</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.reduceBill}</td></tr>
+                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>एकूण बिल</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.bill}</td></tr>
+                    </tbody>
+                </table>
+
+                {/* Footer with enhanced styles */}
+                <div className="footer" style={{ marginTop: '20px', textAlign: 'left', fontSize: '16px', fontWeight: 'bold', padding: '10px'}}>
+                    <p>आपल्या व्यवहारासाठी मनःपूर्वक धन्यवाद!</p>
+                </div>
+                <div className="footer" style={{ marginTop: '20px', textAlign: 'left', fontSize: '16px', fontWeight: 'bold', padding: '10px',borderBottom:"80px solid grey",
+                paddingBottom: "5px",
+                display:"flex", justifyContent:"space-between", alignItems: "center",
+                 }}>
+                    <p>
+                        Delevered By : 
+                    </p>
+                    <img src="/sai_mill_logo.png" style={{ width: '80px', height: '80px' }} />
+                </div>
+                <div className="footer" style={{textAlign:"center"}}
+                >
+                    <h1 style={{ fontWeight:"700", fontSize:"29px", }}
+                    >- sai Gramin Udyog - </h1>
+                    <p style={{ fontWeight:"700", fontSize:"20px", }}
+                    >Kingaon Fata, Phulambri-Khultabad Road </p>
+                </div>
+            </div>
+
+            {/* PDF Button */}
+            <button onClick={handleGeneratePDF} className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md">
+                PDF डाउनलोड करा
             </button>
         </div>
     );

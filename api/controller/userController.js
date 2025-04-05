@@ -64,7 +64,7 @@ const checkUser = asyncHandler(async (req, res) =>{
             return res.status(400).json({ "message" : "User is not registered." })
         }
     }catch(err){
-        res.status(400).json({ "message" : "Authentication failded." });
+        res.status(400).json({ "message" : "Authentication failed." });
     }
 });
 
