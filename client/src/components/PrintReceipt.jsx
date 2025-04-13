@@ -17,59 +17,69 @@ const PrintReceipt = ({ formData }) => {
         pdf.save('receipt.pdf');
     };
 
+    console.log("formData : ", formData)
+
     return (
         <div className='w-full flex flex-col items-center'>
-            <div className="receipt-container" ref={receiptRef} style={{ width: '210mm', height: '297mm', padding: '20mm', border: '2px solid black', background: '#fff' }}>
+            <div className="receipt-container" ref={receiptRef} style={{ width: '210mm', height: '297mm', padding: '5mm 5mm 0mm 5mm', border: '2px solid black', background: '#fff' }}>
+            <p style={{ textAlign: "right", fontSize:"18px", fontWeight: "700", margin:"20px 0" }} >{formData._id}</p>
                 {/* Header */}
-                <div className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <img src="/sai_mill_logo.png" style={{ width: '80px', height: '80px' }} />
-                    <div className="header-title" style={{ textAlign: 'center', flexGrow: 1 }}>
-                        <h1 style={{ fontSize: '24px', margin: '0' }}>!! साई दाळ मिल !!</h1>
-                        <p style={{ fontSize: '14px', margin: '0' }}>आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत!</p>
+                <div className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginBottom: '10px' }}>
+                    <img src="/sai_mill_logo.png" style={{ width: '220px', height: '220px', marginTop: "-45px" }} />
+                    <div className="header-title" style={{ textAlign: 'center', paddingLeft:"20px" }}>
+                        <h1 style={{ fontSize: '64px', margin: '0', fontWeight: "900" }}>!! साई दाळ मिल !!</h1>
+                        <p style={{ fontSize: '18px', margin: '10px', fontWeight: "700" }}>हळवटी मळा, किंगाव फाटा, फुलंब्री खुलताबाद रोड</p>
                     </div>
                 </div>
-
-                {/* Customer Info in 2/2 layout */}
-                <div className="info" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '14px' }}>
-                    <p><strong>नाव:</strong> {formData.name}</p>
-                    <p><strong>गाव:</strong> {formData.village}</p>
-                    <p><strong>दिनांक:</strong> {formData.date}</p>
-                    <p><strong>फोन:</strong> {formData.phone}</p>
+                <div className="numbers" style={{ fontSize: '18px', margin: '0', fontWeight: "700", display:"flex", alignItems: "flex-end" , paddingRight: "8%" }}>
+                <p style={{ fontSize: '18px', margin: '10px', textAlign:"left", width:"100%" }}>- बिना पॉलिश, केमिकल मुक्त, चवदार -</p>
+                <div>
+                    <p style={{whiteSpace:"nowrap", borderBottom: "1px solid black" }} >+91 8007771564</p>
+                    <p style={{whiteSpace:"nowrap",  borderBottom: "1px solid black"}}>+91 7083301592</p>
+                    </div>
                 </div>
-
                 {/* Table */}
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+                <table style={{ width: '110mm', borderCollapse: 'collapse', margin:"20px auto auto auto", fontSize:"18px"}}>
                     <tbody>
-                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>प्रकार</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.type}</td></tr>
-                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>वजन</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.weight}</td></tr>
-                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>दर</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.rate}</td></tr>
-                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>घट</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.ghat}</td></tr>
-                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>भुशा</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.bhusa}</td></tr>
-                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>डाळ</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.dal}</td></tr>
-                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>कमी बिल</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.reduceBill}</td></tr>
-                        <tr><th style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>एकूण बिल</th><td style={{ border: '1px solid black', padding: '8px' }}>{formData.bill}</td></tr>
+                    <tr>
+                    <td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>दिनांक</td>
+                    <td style={{ border: '1px solid black', padding: '8px',width:"280px" }}>{formData.date}</td>
+                    </tr>
+                    <tr>
+                    <td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>नाव</td>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{formData.name}</td>
+                    </tr>
+                    <tr>
+                    <td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>गाव</td>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{formData.village}</td>
+                    </tr>
+                    <tr>
+                    <td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>फोन</td>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{formData.phone}</td>
+                    </tr>
+
+                        <tr style={{width: "max-content"}}><td style={{ border: '1px solid black', padding: '8px', textAlign: 'left', width:"150px" }}>प्रकार</td><td style={{ border: '1px solid black', padding: '8px' }}>{formData.type}</td></tr>
+                        <tr><td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>वजन</td><td style={{ border: '1px solid black', padding: '8px' }}>{formData.weight}</td></tr>
+                        <tr><td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>दर</td><td style={{ border: '1px solid black', padding: '8px' }}>{formData.rate}</td></tr>
+                        <tr><td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>घट</td><td style={{ border: '1px solid black', padding: '8px' }}>{formData.ghat}</td></tr>
+                        <tr><td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>भुशा</td><td style={{ border: '1px solid black', padding: '8px' }}>{formData.bhusa}</td></tr>
+                        <tr><td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>दाळ</td><td style={{ border: '1px solid black', padding: '8px' }}>{formData.dal}</td></tr>
+                        <tr><td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>कमी बिल</td><td style={{ border: '1px solid black', padding: '8px' }}>{formData.reduceBill}</td></tr>
+                        <tr><td style={{ border: '1px solid black', padding: '8px', textAlign: 'left' }}>एकूण बिल</td><td style={{ border: '1px solid black', padding: '8px' }}>{formData.bill}</td></tr>
                     </tbody>
                 </table>
 
                 {/* Footer with enhanced styles */}
-                <div className="footer" style={{ marginTop: '20px', textAlign: 'left', fontSize: '16px', fontWeight: 'bold', padding: '10px'}}>
-                    <p>आपल्या व्यवहारासाठी मनःपूर्वक धन्यवाद!</p>
-                </div>
-                <div className="footer" style={{ marginTop: '20px', textAlign: 'left', fontSize: '16px', fontWeight: 'bold', padding: '10px',borderBottom:"80px solid grey",
+                
+                <div className="footer" style={{ marginTop: '20px', textAlign: 'left', fontSize: '16px', fontWeight: '400', padding: '10px',
                 paddingBottom: "5px",
-                display:"flex", justifyContent:"space-between", alignItems: "center",
+                display:"flex", justifyContent:"space-between", alignItems: "center", width:"92%"
                  }}>
-                    <p>
-                        Delevered By : 
+                    <p style={{ fontSize: '18px', margin: '0', paddingLeft:"15px" }}>आम्ही आपल्या सेवेसाठी सदैव तत्पर आहोत !</p>
+                    <p style={{ fontSize: '18px', margin: '0', paddingLeft: "5%" }}>
+                        वितरित केले: 
                     </p>
-                    <img src="/sai_mill_logo.png" style={{ width: '80px', height: '80px' }} />
-                </div>
-                <div className="footer" style={{textAlign:"center"}}
-                >
-                    <h1 style={{ fontWeight:"700", fontSize:"29px", }}
-                    >- sai Gramin Udyog - </h1>
-                    <p style={{ fontWeight:"700", fontSize:"20px", }}
-                    >Kingaon Fata, Phulambri-Khultabad Road </p>
+                    {/* <img src="/sai_mill_logo.png" style={{ width: '80px', height: '80px' }} /> */}
                 </div>
             </div>
 
