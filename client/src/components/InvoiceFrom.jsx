@@ -293,16 +293,16 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     }
                     
                 </div>
-                {/* <div className="group flex gap-2 w-full">
+                <div className="group flex gap-2 w-full">
                     <div className="w-1/2 mx-auto">
                         <button type="button" onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md w-full">Submit</button>
                     </div>
-                    <div className="w-1/2 mx-auto">
+                    {/* <div className="w-1/2 mx-auto">
                         <div className="printReceipt flex justify-center w-full">
                             <PrintReceipt formData={formData} />
                     </div>
-                    </div>
-                </div> */}
+                    </div> */}
+                </div>
                 </form>
 
                 {userMessage && <Popup message={userMessage} type={popupType} onClose={() => setUserMessage("")} />}
