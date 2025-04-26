@@ -297,11 +297,11 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     <div className="w-1/2 mx-auto">
                         <button type="button" onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md w-full">Submit</button>
                     </div>
-                    {/* <div className="w-1/2 mx-auto">
+                    <div className="w-1/2 mx-auto">
                         <div className="printReceipt flex justify-center w-full">
-                            <PrintReceipt formData={formData} />
+                            {/* <PrintReceipt formData={formData} /> */}
                     </div>
-                    </div> */}
+                    </div>
                 </div>
                 </form>
 
