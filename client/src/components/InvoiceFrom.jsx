@@ -85,7 +85,21 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     setPopupType("success");
                     setTimeout(() => {
                         setUserMessage("");
-                    }, 3000);
+                        setFormData({
+                            name: '',
+                            village: '',
+                            date: formattedDate,
+                            phone : '',
+                            type : types,
+                            weight: '',
+                            rate: '',
+                            ghat: '',
+                            bhusa: '',
+                            dal: '',
+                            reduceBill : '',
+                            bill: ''
+                        });
+                    }, 2000);
 
                     res = res.bill;
 
