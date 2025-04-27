@@ -85,26 +85,13 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     res = await res.json();
                     setUserMessage("Bill created successfully!");
                     setPopupType("success");
-                    setTimeout(() => {
-                        setUserMessage("");
-                        setFormData({
-                            name: '',
-                            village: '',
-                            date: formattedDate,
-                            phone : '',
-                            type : types,
-                            weight: '',
-                            rate: 8,
-                            ghat: '',
-                            bhusa: '',
-                            dal: '',
-                            reduceBill : '',
-                            bill: ''
-                        });
-                    }, 2000);
 
                     res = res.bill;
                     setShowReceiptPopup(true);
+
+                    setTimeout(() => {
+                        setUserMessage("");
+                    }, 2000);
 
                 } else {
                     console.error("Failed to create new receipt :", res.status, res.statusText, error);
@@ -123,6 +110,25 @@ const InvoiceForm = ({ isDeliveryMode }) => {
             }
         };
 
+
+        const handleClearFormData = () => {
+            setFormData({
+                name: '',
+                village: '',
+                date: formattedDate,
+                phone : '',
+                type : types,
+                weight: '',
+                rate: 8,
+                ghat: '',
+                bhusa: '',
+                dal: '',
+                reduceBill : '',
+                bill: ''
+            });
+        };
+
+
     useEffect(() => {
 
         let ratePerKg = types === 'toor'? 8 : types === 'moog'? 8 : 8;
@@ -132,7 +138,8 @@ const InvoiceForm = ({ isDeliveryMode }) => {
             type: types, 
             rate: ratePerKg
         }));
-    }, [types]);
+
+    }, [types, showReceiptPopup]);
 
     if (loading) {
         return <p className="text-white text-center">Loading...</p>;
@@ -323,9 +330,9 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                 </div>
                 </form>
 
-                    {
-                        showReceiptPopup && <Receipt_Pop formData={formData} onClose={() => setShowReceiptPopup(false)} />
-                    }
+                {
+                    showReceiptPopup && <Receipt_Pop formData={formData} onClose={() => setShowReceiptPopup(false)} clearFormData={handleClearFormData} />
+                }
                     
                 {userMessage && <Popup message={userMessage} type={popupType} onClose={() => setUserMessage("")} />}
 
