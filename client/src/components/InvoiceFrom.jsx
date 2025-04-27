@@ -16,7 +16,7 @@ const InvoiceForm = ({ isDeliveryMode }) => {
     const { loading, setLoading } = useContext(UserContext);
     const receiptRef = useRef();
     const [error, setError ] = useState("");
-    const [ showReceiptPopup, setShowReceiptPopup ] = useState(true);
+    const [ showReceiptPopup, setShowReceiptPopup ] = useState(false);
     const navigate = useNavigate();
 
     const today = new Date();
