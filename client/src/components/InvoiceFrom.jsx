@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
+import Receipt_Pop from './Receipt_Pop.jsx';
 import PrintReceipt from './PrintReceipt';
 import { Link, useNavigate } from 'react-router-dom';
 import { TypeContext } from '../context/TypeProvider';
@@ -15,6 +16,7 @@ const InvoiceForm = ({ isDeliveryMode }) => {
     const { loading, setLoading } = useContext(UserContext);
     const receiptRef = useRef();
     const [error, setError ] = useState("");
+    const [ showReceiptPopup, setShowReceiptPopup ] = useState(true);
     const navigate = useNavigate();
 
     const today = new Date();
@@ -102,6 +104,7 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     }, 2000);
 
                     res = res.bill;
+                    setShowReceiptPopup(true);
 
                 } else {
                     console.error("Failed to create new receipt :", res.status, res.statusText, error);
@@ -311,6 +314,7 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                     <div className="w-1/2 mx-auto">
                         <button type="button" onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md w-full">Submit</button>
                     </div>
+
                     <div className="w-1/2 mx-auto">
                         <div className="printReceipt flex justify-center w-full">
                             {/* <PrintReceipt formData={formData} /> */}
@@ -319,6 +323,10 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                 </div>
                 </form>
 
+                    {
+                        showReceiptPopup && <Receipt_Pop formData={formData} onClose={() => setShowReceiptPopup(false)} />
+                    }
+                    
                 {userMessage && <Popup message={userMessage} type={popupType} onClose={() => setUserMessage("")} />}
 
 

@@ -27,7 +27,7 @@ const Home = () => {
   return (
     <>
     <div className="heroBanner">
-        {/* <img src={heroBanner} alt="hero banner" className='h-[90vh] w-full' /> */}
+        {/* <img src={'./saiMill_hero.jpg'} alt="hero banner" className='h-[90vh] w-full' /> */}
 
         <div className="relative isolate overflow-hidden bg-gray-900">
           {/* Background Gradient Graphic */}

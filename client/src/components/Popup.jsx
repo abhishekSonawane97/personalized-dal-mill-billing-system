@@ -17,7 +17,7 @@ const Popup = ({ message, onClose, type = "success" }) => {
         document.addEventListener("keydown", closeOnEscape);
 
         // Auto-close after 3 seconds
-        const timer = setTimeout(() => onClose(), 3000);
+        const timer = setTimeout(() => onClose(), 2000);
 
         return () => {
             document.removeEventListener("keydown", closeOnEscape);
