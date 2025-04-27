@@ -92,7 +92,7 @@ const InvoiceForm = ({ isDeliveryMode }) => {
                             phone : '',
                             type : types,
                             weight: '',
-                            rate: '',
+                            rate: 8,
                             ghat: '',
                             bhusa: '',
                             dal: '',
