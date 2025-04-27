@@ -42,7 +42,7 @@ const InvoiceForm = ({ isDeliveryMode }) => {
         setFormData(prevData => {
             const updatedData = { ...prevData, [name]: value };
             if (name === 'weight' || name === 'rate') {
-                updatedData.dal = 0.8 * Number(updatedData.weight);
+                updatedData.dal = 0.7 * Number(updatedData.weight);
                 updatedData.bhusa = 0.28 * Number(updatedData.weight);
                 updatedData.ghat = Number(updatedData.weight) - Number(updatedData.dal) - Number(updatedData.bhusa);
                 updatedData.bill = Number(updatedData.weight) * Number(updatedData.rate);
